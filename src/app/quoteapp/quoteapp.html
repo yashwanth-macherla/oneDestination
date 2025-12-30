@@ -1,0 +1,121 @@
+<div class="min-h-screen bg-slate-900 flex items-center justify-center px-4 py-6">
+  <div class="w-full max-w-3xl rounded-2xl border border-slate-700 bg-slate-900 p-5 space-y-5">
+    <h1 class="text-lg font-semibold text-slate-50 text-center">Quote Generator</h1>
+
+    <main class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <section class="flex flex-col gap-4 rounded-xl border border-slate-700 bg-slate-950 p-4">
+
+
+        <div class="space-y-1.5">
+          <label class="flex items-center justify-between text-xs text-slate-300">
+            <span>Category</span>
+            <span class="text-[11px] text-slate-400">Pick the mood</span>
+          </label>
+          <select
+            class="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-xs sm:text-sm text-slate-100 outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-500"
+            [(ngModel)]="selectedCategory"
+            name="category"
+          >
+            <option *ngFor="let c of categories" [ngValue]="c">
+              {{  c }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Topic -->
+        <div class="space-y-1.5">
+          <label class="flex items-center justify-between text-xs text-slate-300">
+            <span>Topic / context (optional)</span>
+            <span class="text-[11px] text-slate-400">e.g. exams, gym, promotions</span>
+          </label>
+          <input
+            class="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-xs sm:text-sm text-slate-100 placeholder:text-slate-500 outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-500"
+            type="text"
+            [(ngModel)]="topic"
+            name="topic"
+            maxlength="60"
+            placeholder="Type a scenario or leave blank"
+          />
+        </div>
+
+        <!-- Button -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-1">
+          <button
+            class="inline-flex items-center justify-center gap-2 rounded-md bg-sky-500 px-4 py-2 text-[11px] sm:text-xs font-semibold uppercase tracking-[0.12em] text-slate-950 disabled:opacity-70 disabled:cursor-not-allowed"
+            (click)="generateQuote()"
+            [disabled]="isLoading"
+          >
+            <span *ngIf="!isLoading">✨</span>
+            <span
+              *ngIf="isLoading"
+              class="h-3.5 w-3.5 rounded-full border-2 border-slate-900 border-t-slate-100 animate-spin "
+            ></span>
+            <span>{{ isLoading ? 'Crafting line...' : 'Generate quote' }}</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Right: output -->
+      <section class="flex flex-col gap-4 rounded-xl border border-slate-700 bg-slate-950 p-4">
+
+
+        <div class="rounded-lg border border-slate-700 bg-slate-900 p-4 space-y-3">
+          <!-- Meta -->
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span
+              class="inline-flex items-center rounded-full border border-sky-400 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.12em] text-slate-100"
+            >
+              {{ selectedCategory | titlecase }}
+            </span>
+            <span
+              *ngIf="topicForDisplay"
+              class="inline-flex items-center rounded-full border border-slate-600 px-3 py-1 text-[11px] text-slate-300"
+            >
+              Topic: {{ topicForDisplay }}
+            </span>
+          </div>
+
+          <!-- Quote / placeholder -->
+          <div class="min-h-[72px] flex items-center">
+            <p
+              *ngIf="quote; else noQuote"
+              class="text-base sm:text-lg font-medium leading-relaxed text-slate-50"
+            >
+              {{ quote }}
+            </p>
+            <ng-template #noQuote>
+              <p class="text-sm text-slate-400">
+                Press <span class="font-semibold text-slate-200">Generate quote</span> to get a
+                short line for your moment.
+              </p>
+            </ng-template>
+          </div>
+
+          <!-- Chips -->
+
+
+          <!-- Status -->
+          <div class="text-[11px] text-slate-400">
+            <div *ngIf="isLoading; else idleState">Talking to Groq… polishing something neat.</div>
+            <ng-template #idleState>
+              <span>
+                {{ quote ? 'Tap generate again for a new line.' : '' }}
+              </span>
+            </ng-template>
+          </div>
+
+          <!-- Error -->
+          <div
+            *ngIf="error"
+            class="mt-1 inline-flex items-center gap-2 rounded-md border border-red-500 bg-red-900/70 px-3 py-1.5 text-[11px] text-red-50"
+          >
+            <span class="h-2 w-2 rounded-full bg-red-400"></span>
+            <span>{{ error }}</span>
+        </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+
